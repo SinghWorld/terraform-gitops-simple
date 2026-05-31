@@ -1,0 +1,64 @@
+###############################################################################
+# .github/workflows/terraform-destroy.yml
+# Trigger : Manual (workflow_dispatch) — safety gate prevents accidental runs
+# Purpose : Cleanly destroy all resources
+###############################################################################
+
+name: "💣 Terraform Destroy"
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_destroy:
+        description: "Type DESTROY to confirm you want to destroy all resources"
+        required: true
+        type: string
+      environment:
+        description: "Environment to destroy"
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+
+env:
+  TF_VERSION: "1.8.0"
+  AWS_REGION:  "us-east-1"
+
+jobs:
+  destroy:
+    name: "Terraform Destroy"
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── Safety gate ───────────────────────────────────────────────────────
+      - name: "🛑 Safety Check"
+        if: ${{ github.event.inputs.confirm_destroy != 'DESTROY' }}
+        run: |
+          echo "❌ You must type DESTROY to confirm. Got: ${{ github.event.inputs.confirm_destroy }}"
+          exit 1
+
+      - name: "📥 Checkout code"
+        uses: actions/checkout@v4
+
+      - name: "⚙️  Setup Terraform ${{ env.TF_VERSION }}"
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: "🔑 Configure AWS credentials"
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ env.AWS_REGION }}
+
+      - name: "🔧 Terraform Init"
+        run: terraform init -input=false
+
+      - name: "💣 Terraform Destroy"
+        run: |
+          terraform destroy \
+            -var-file="environments/${{ github.event.inputs.environment }}/${{ github.event.inputs.environment }}.tfvars" \
+            -auto-approve \
+            -no-color
