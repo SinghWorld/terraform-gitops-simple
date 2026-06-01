@@ -29,10 +29,16 @@ if aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then
 fi
 
 echo "📦  Creating S3 bucket..."
-aws s3api create-bucket \
-  --bucket "$BUCKET_NAME" \
-  --region "$REGION" \
-  --create-bucket-configuration LocationConstraint="$REGION"
+if [ "$REGION" = "us-east-1" ]; then
+  aws s3api create-bucket \
+    --bucket "$BUCKET_NAME" \
+    --region "$REGION"
+else
+  aws s3api create-bucket \
+    --bucket "$BUCKET_NAME" \
+    --region "$REGION" \
+    --create-bucket-configuration LocationConstraint="$REGION"
+fi
 
 echo "🔒  Enabling versioning..."
 aws s3api put-bucket-versioning \
