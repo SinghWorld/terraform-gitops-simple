@@ -244,3 +244,6 @@ Once this simple setup is working, extend it in this order:
 - [HashiCorp Terraform Docs](https://developer.hashicorp.com/terraform/docs)
 - [GitHub Actions for Terraform](https://github.com/hashicorp/setup-terraform)
 - [AWS Actions — configure-aws-credentials](https://github.com/aws-actions/configure-aws-credentials)
+
+## 📺 Watch the Full Video
+[![YouTube](https://img.shields.io/badge/YouTube-Watch%20Now-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=iTrxsotFNHA)
