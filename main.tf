@@ -37,7 +37,7 @@ module "demo_bucket" {
   bucket_name = "${var.project_name}-${var.environment}-${var.aws_region}"
   environment = var.environment
 
-  enable_versioning = true
-  enable_encryption = true
+  enable_versioning   = true
+  enable_encryption   = true
   block_public_access = true
 }

@@ -6,7 +6,7 @@
 
 terraform {
   backend "s3" {
-    bucket  = "mrbalraj-tfstate-gitops"        # created by bootstrap.sh
+    bucket  = "mrbalraj-tfstate-gitops" # created by bootstrap.sh
     key     = "simple/terraform.tfstate"
     region  = "us-east-1"
     encrypt = true
